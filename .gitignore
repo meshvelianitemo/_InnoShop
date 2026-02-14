@@ -1,0 +1,30 @@
+# Visual Studio / VS Code
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+*.csproj.user
+
+
+# Build folders
+bin/
+obj/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# NuGet
+*.nupkg
+
+# secret files
+*.env
+
