@@ -23,7 +23,7 @@ services:
 
   # -------- User API --------
   user-api:
-    build: ./UserService
+    build: ./UserManagement
     container_name: user-api
     depends_on:
       user-db:
@@ -63,7 +63,7 @@ services:
 
   # -------- Product API --------
   product-api:
-    build: ./ProductService
+    build: ./ProductManagement
     container_name: product-api
     depends_on:
       product-db:
