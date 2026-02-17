@@ -119,7 +119,7 @@ using (var scope = app.Services.CreateScope())
         {
             logger.LogInformation("Migrating database... (Attempt {Attempt}/{Total})", i, retries);
             db.Database.Migrate();
-            logger.LogInformation("✅ Database migrated successfully");
+            logger.LogInformation("Database migrated successfully");
             break;
         }
         catch (Exception ex)
