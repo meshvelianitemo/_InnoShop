@@ -10,10 +10,11 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${USER_DB_PASSWORD}
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${USER_DB_PASSWORD} -Q "SELECT 1"
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
     ports:
       - "1433:1433"
     volumes:
@@ -50,10 +51,11 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${PRODUCT_DB_PASSWORD}
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${PRODUCT_DB_PASSWORD} -Q "SELECT 1"
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P \"$SA_PASSWORD\" -Q \"SELECT 1\" || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
     ports:
       - "1434:1433"
     volumes:
