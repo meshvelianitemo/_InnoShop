@@ -1,19 +1,23 @@
- # -------- User DB --------
+version: "3.9"
+
+services:
+
+  # -------- User DB --------
   user-db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: user-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${USER_DB_PASSWORD}   # Reference secret in .env
+      SA_PASSWORD: ${USER_DB_PASSWORD}
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${USER_DB_PASSWORD} -Q "SELECT 1"
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
-      - "1433:1433"                     # External host port : container port
+      - "1433:1433"
     volumes:
-      - user-db-data:/var/opt/mssql     # Persist DB between container restarts
+      - user-db-data:/var/opt/mssql
     networks:
       - inno-network
 
@@ -25,13 +29,10 @@
       user-db:
         condition: service_healthy
     environment:
-      # Connection string override for Docker container
       ConnectionStrings__DefaultConnectionString: "Server=user-db,1433;Database=UserManagementDb;User Id=sa;Password=${USER_DB_PASSWORD};TrustServerCertificate=True;"
-      # JWT override
-      JwtSettings__validIssuer: "${JWT_VALID_ISSUER}" 
+      JwtSettings__validIssuer: "${JWT_VALID_ISSUER}"
       JwtSettings__validAudience: "${JWT_VALID_AUDIENCE}"
       JwtSettings__Key: "${JWT_KEY}"
-      # Email override (password should be in .env)
       EmailSettings__Address: "${EMAIL_ADDRESS}"
       EmailSettings__Password: "${EMAIL_PASSWORD}"
       EmailSettings__SmtpHost: "${EMAIL_SMTP_HOST}"
@@ -47,14 +48,14 @@
     container_name: product-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${PRODUCT_DB_PASSWORD}  # Secret from .env
+      SA_PASSWORD: ${PRODUCT_DB_PASSWORD}
     healthcheck:
       test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${PRODUCT_DB_PASSWORD} -Q "SELECT 1"
       interval: 10s
       timeout: 5s
       retries: 5
     ports:
-      - "1434:1433"                       # Use different external port for multiple SQLs
+      - "1434:1433"
     volumes:
       - product-db-data:/var/opt/mssql
     networks:
@@ -69,12 +70,9 @@
         condition: service_healthy
     environment:
       ConnectionStrings__DefaultConnection: "Server=product-db,1433;Database=ProductManagementDb;User Id=sa;Password=${PRODUCT_DB_PASSWORD};TrustServerCertificate=True;"
-      
-      # JWT override
-      JwtSettings__validIssuer: "${JWT_VALID_ISSUER}" 
+      JwtSettings__validIssuer: "${JWT_VALID_ISSUER}"
       JwtSettings__validAudience: "${JWT_VALID_AUDIENCE}"
       JwtSettings__Key: "${JWT_KEY}"
-      # Email override (password should be in .env)
       EmailSettings__Address: "${EMAIL_ADDRESS}"
       EmailSettings__Password: "${EMAIL_PASSWORD}"
       EmailSettings__SmtpHost: "${EMAIL_SMTP_HOST}"
@@ -85,15 +83,15 @@
       - inno-network
 
 # =========================================
-# Persistent volumes for SQL Server data
+# Persistent volumes
 # =========================================
-  volumes:
-    user-db-data:
-    product-db-data:
+volumes:
+  user-db-data:
+  product-db-data:
 
 # =========================================
-# Network for all services to talk to each other
+# Network
 # =========================================
-  networks:
-    inno-network:
-      driver: bridge
+networks:
+  inno-network:
+    driver: bridge
