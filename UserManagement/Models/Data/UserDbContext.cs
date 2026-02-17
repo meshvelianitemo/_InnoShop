@@ -62,7 +62,13 @@ namespace UserManagement.Models.Data
                 entity.Property(e => e.RoleName)
                         .IsRequired()
                         .HasMaxLength(100);
+
+                entity.HasData(
+                        new Role { RoleId=1, RoleName = "Client" },
+                        new Role { RoleId=2, RoleName = "Admin" }
+                );
             });
+
 
             modelBuilder.Entity<EmailVerification>(entity =>
             {

@@ -10,7 +10,7 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${USER_DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "exit 0"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -U sa -P ${USER_DB_PASSWORD} -Q 'SELECT 1' -b -o /dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -27,10 +27,9 @@ services:
     build: ./UserManagement
     container_name: user-api
     depends_on:
-      - user-db #:
-        # condition: service_healthy
+      user-db:
+        condition: service_healthy
     environment:
-      ProductService__baseUrl: "${PRODUCT_MANAGEMENT_BASE_URL}"
       ConnectionStrings__DefaultConnectionString: "Server=user-db,1433;Database=UserManagementDb;User Id=sa;Password=${USER_DB_PASSWORD};TrustServerCertificate=True;"
       JwtSettings__validIssuer: "${JWT_VALID_ISSUER}"
       JwtSettings__validAudience: "${JWT_VALID_AUDIENCE}"
@@ -52,7 +51,7 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${PRODUCT_DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "exit 0"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -U sa -P ${PRODUCT_DB_PASSWORD} -Q 'SELECT 1' -b -o /dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -69,8 +68,8 @@ services:
     build: ./ProductManagement
     container_name: product-api
     depends_on:
-      - product-db #:
-        # condition: service_healthy
+      product-db:
+        condition: service_healthy
     environment:
       ConnectionStrings__DefaultConnection: "Server=product-db,1433;Database=ProductManagementDb;User Id=sa;Password=${PRODUCT_DB_PASSWORD};TrustServerCertificate=True;"
       JwtSettings__validIssuer: "${JWT_VALID_ISSUER}"

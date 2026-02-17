@@ -28,9 +28,10 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 //Register HttpClient for ProductService
+var productApiBaseUrl = builder.Configuration["ProductService:baseUrl"];
 builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7053/"); // Product Microservice URL
+    client.BaseAddress = new Uri(productApiBaseUrl); // Product Microservice URL
 });
 
 // Add Cors 
