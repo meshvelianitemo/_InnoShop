@@ -16,9 +16,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-// Add ProductServiceClient for HttpClient Factory
-builder.Services.AddHttpClient<IProductServiceClient, ProductServiceClient>();
-
 
 //Add DbContext for User Management
 builder.Services.AddDbContext<UserDbContext>(options =>
@@ -140,7 +137,7 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
     var retries = 5;
