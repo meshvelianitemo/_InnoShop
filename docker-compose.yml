@@ -39,7 +39,8 @@ services:
       EmailSettings__Password: "${EMAIL_PASSWORD}"
       EmailSettings__SmtpHost: "${EMAIL_SMTP_HOST}"
       EmailSettings__Port: "${EMAIL_PORT}"
-      Serilog__WriteTo__1__Args__serverUrl: "${SERILOG_SERVER_URL}"
+      Serilog__WriteTo__1__Name: "Seq"
+      Serilog__WriteTo__1__Args__serverUrl: "http://seq:5341"
     ports:
       - "5001:80"
     networks:
@@ -81,7 +82,8 @@ services:
       EmailSettings__Password: "${EMAIL_PASSWORD}"
       EmailSettings__SmtpHost: "${EMAIL_SMTP_HOST}"
       EmailSettings__Port: "${EMAIL_PORT}"
-      Serilog__WriteTo__1__Args__serverUrl: "${SERILOG_SERVER_URL}"
+      Serilog__WriteTo__1__Name: "Seq"
+      Serilog__WriteTo__1__Args__serverUrl: "http://seq:5341"
     ports:
       - "5002:80"
     networks:
@@ -93,8 +95,11 @@ services:
     container_name: seq
     environment:
       - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
     ports:
       - "5341:80"
+    networks:
+      - inno-network
 # =========================================
 # Persistent volumes
 # =========================================
