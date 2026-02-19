@@ -26,6 +26,16 @@ namespace ProductManagement.Models.Data
                 entity.Property(e => e.CategoryName)
                       .IsRequired()
                       .HasMaxLength(100);
+
+                entity.HasData(
+                  new ProductCategory { CategoryId = 1, CategoryName = "Electronics" },
+                  new ProductCategory { CategoryId = 2, CategoryName = "Clothing" },
+                  new ProductCategory { CategoryId = 3, CategoryName = "Home & Kitchen" },
+                  new ProductCategory { CategoryId = 4, CategoryName = "Books" },
+                  new ProductCategory { CategoryId = 5, CategoryName = "Sports & Outdoors" },
+                  new ProductCategory { CategoryId = 6, CategoryName = "Beauty & Personal Care" },
+                  new ProductCategory { CategoryId = 7, CategoryName = "Toys & Games" }
+            );
             });
 
             modelBuilder.Entity<Product>(entity =>

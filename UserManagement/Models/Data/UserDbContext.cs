@@ -54,6 +54,22 @@ namespace UserManagement.Models.Data
                 entity.Property(e => e.CreatedAt)
                         .IsRequired();
                 entity.Property(e => e.UpdatedAt);
+
+
+                entity.HasData(
+            new User
+            {
+                UserId = 1,
+                FirstName = "System",
+                LastName = "Administrator",
+                Email = "admin@system.local",
+                PasswordHash = "AQAAAAEAACcQAAAAEIM9Gb9aogKUXsuO5FOBcvftv4BETrT9VGpGfYB7ER2nxW8eV2+oCBpkAZt8oxnXNw==", //Admin@123
+                IsActive = true,
+                CreatedAt = new DateTime(2025, 1, 1),
+                UpdatedAt = null
+            }
+        );
+
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -69,6 +85,14 @@ namespace UserManagement.Models.Data
                 );
             });
 
+
+             modelBuilder.Entity<UserRole>().HasData(
+                new UserRole
+                {
+                        UserId = 1,
+                        RoleId = 2 // Admin
+                }
+            );
 
             modelBuilder.Entity<EmailVerification>(entity =>
             {
