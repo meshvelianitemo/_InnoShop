@@ -7,6 +7,7 @@ using System.Security.Claims;
 using UserManagement.Exceptions;
 using UserManagement.Models.Data;
 using UserManagement.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +118,16 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAuthorization();
 
 
+// Setting up Serilog for logging
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
+
+
 var app = builder.Build();
 
 // Use Global Exception Handling Middleware
@@ -132,6 +143,8 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSerilogRequestLogging();
 
 app.MapControllers();
 

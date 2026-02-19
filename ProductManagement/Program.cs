@@ -116,30 +116,32 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseSerilogRequestLogging();
+
 app.MapControllers();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
-//    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-//    var retries = 5;
-//    for (int i = 1; i <= retries; i++)
-//    {
-//        try
-//        {
-//            logger.LogInformation("Migrating database... (Attempt {Attempt}/{Total})", i, retries);
-//            db.Database.Migrate();
-//            logger.LogInformation("Database migrated successfully");
-//            break;
-//        }
-//        catch (Exception ex)
-//        {
-//            logger.LogWarning(ex, "Migration failed");
-//            if (i == retries) throw;
-//            System.Threading.Thread.Sleep(2000);
-//        }
-//    }
-//}
+    var retries = 5;
+    for (int i = 1; i <= retries; i++)
+    {
+        try
+        {
+            logger.LogInformation("Migrating database... (Attempt {Attempt}/{Total})", i, retries);
+            db.Database.Migrate();
+            logger.LogInformation("Database migrated successfully");
+            break;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Migration failed");
+            if (i == retries) throw;
+            System.Threading.Thread.Sleep(2000);
+        }
+    }
+}
 
 app.Run();
