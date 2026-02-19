@@ -8,6 +8,8 @@ using ProductManagement.Models.Data;
 using ProductManagement.Models.Validators;
 using ProductManagement.Services;
 using System.Security.Claims;
+using Serilog;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,6 +92,15 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddAuthorization();
 
 
+// Setting up Serilog for logging
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
 // Use Global Exception Handling Middleware
@@ -98,7 +109,7 @@ app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// app.UseHttpsRedirection();
+ //app.UseHttpsRedirection();
 
 app.UseCors();
 
@@ -107,28 +118,28 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
+//    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    var retries = 5;
-    for (int i = 1; i <= retries; i++)
-    {
-        try
-        {
-            logger.LogInformation("Migrating database... (Attempt {Attempt}/{Total})", i, retries);
-            db.Database.Migrate();
-            logger.LogInformation("Database migrated successfully");
-            break;
-        }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex, "Migration failed");
-            if (i == retries) throw;
-            System.Threading.Thread.Sleep(2000);
-        }
-    }
-}
+//    var retries = 5;
+//    for (int i = 1; i <= retries; i++)
+//    {
+//        try
+//        {
+//            logger.LogInformation("Migrating database... (Attempt {Attempt}/{Total})", i, retries);
+//            db.Database.Migrate();
+//            logger.LogInformation("Database migrated successfully");
+//            break;
+//        }
+//        catch (Exception ex)
+//        {
+//            logger.LogWarning(ex, "Migration failed");
+//            if (i == retries) throw;
+//            System.Threading.Thread.Sleep(2000);
+//        }
+//    }
+//}
 
 app.Run();
